@@ -1,0 +1,30 @@
+/**
+ * @copyright	Copyright (c) 2021  R2H BV (httpwwwr2hnl). All rights reserved.
+ * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ */
+
+#chatGPTModal .modal-body {
+    position: relative;
+}
+
+#loadingSpin {
+    width: 2rem;
+    height: 2rem;
+    border: 5px solid #f3f3f3;
+    border-top: 6px solid #9c41f2;
+    border-radius: 100%;
+    margin: auto;
+    visibility: hidden;
+    animation: spin 1s infinite linear;
+    position: absolute;
+    left: calc(50% - 1rem);
+    top: calc(50% - 1rem);
+}
+
+#loadingSpin.display {
+    visibility: visible;
+}
+
+#answerText {
+    min-height: 200px;
+}

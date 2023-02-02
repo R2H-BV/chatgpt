@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" version="4.0" group="editors-xtd" method="upgrade">
+	<name>plg_editors-xtd_chatgpt</name>
+	<author>Rick Spaan - R2H</author>
+	<creationDate>Jan 2023</creationDate>
+	<copyright>Copyright (c) 2023 R2H B.V. All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<authorEmail>rick@r2h.nl</authorEmail>
+	<authorUrl>https://www.r2h.nl</authorUrl>
+	<version>1.0.0</version>
+	<description>PLG_EDITORS-XTD_CHATGPT_XML_DESCRIPTION</description>
+	<files>
+		<filename plugin="chatgpt">chatgpt.php</filename>
+	</files>
+
+	<media folder="media" destination="plg_editors-xtd_chatgpt">
+		<folder>css</folder>
+		<folder>js</folder>
+	</media>
+
+	<languages>
+		<language tag="en-GB">language/en-GB/plg_editors-xtd_chatgpt.ini</language>
+		<language tag="en-GB">language/en-GB/plg_editors-xtd_chatgpt.sys.ini</language>
+	</languages>
+
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+					name="apikey"
+					type="text"
+					label="PLG_EDITORS-XTD_CHATGPT_APIKEY"
+					description="PLG_EDITORS-XTD_CHATGPT_APIKEY_DESC"
+					filter="safehtml" />
+				<field
+					name="model"
+					type="list"
+					label="PLG_EDITORS-XTD_CHATGPT_MODEL"
+					description="PLG_EDITORS-XTD_CHATGPT_MODEL_DESC"
+					default="text-davinci-003">
+					<option value="text-davinci-003">text-davinci-003</option>
+					<option value="text-curie-001">text-curie-001</option>
+					<option value="text-babbage-001">text-babbage-001</option>
+					<option value="text-ada-001">text-ada-001</option>
+				</field>
+				<field
+					name="temp"
+					type="number"
+					label="PLG_EDITORS-XTD_CHATGPT_TEMP"
+					description="PLG_EDITORS-XTD_CHATGPT_TEMP_DESC"
+					default="0.5"
+					min="0"
+					max="1"
+					step="0.01" />
+				<field
+					name="tokenLow"
+					type="number"
+					label="PLG_EDITORS-XTD_CHATGPT_TOKENS_LOW"
+					description="PLG_EDITORS-XTD_CHATGPT_TOKENS_LOW_DESC"
+					default="1000"
+					min="1"
+					max="2048"
+					showon="model:text-curie-001[OR]model:text-babbage-001[OR]model:text-ada-001"
+					step="1" />
+				<field
+					name="tokenHi"
+					type="number"
+					label="PLG_EDITORS-XTD_CHATGPT_TOKENS_HI"
+					description="PLG_EDITORS-XTD_CHATGPT_TOKENS_HI_DESC"
+					default="2000"
+					min="1"
+					max="4000"
+					showon="model:text-davinci-003"
+					step="1" />
+			</fieldset>
+		</fields>
+	</config>
+</extension>
