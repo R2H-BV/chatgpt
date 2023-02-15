@@ -4,7 +4,7 @@
 		<name>Chat GPT editor-xtd plugin</name>
 		<description>Joomla! CMS Chat GPT editor-xtd plugin</description>
 		<version>1.0.1</version>
-		<infourl title="Module version system plugin">https://github.com/R2H-BV/chatgpt</infourl>
+		<infourl title="Chat GPT editor-xtd plugin">https://github.com/R2H-BV/chatgpt</infourl>
 		<downloads>
 			<downloadurl type="full" format="zip">https://github.com/R2H-BV/chatgpt/releases/download/v1.0.1/plg-chatgpt-1.0.1.zip</downloadurl>
 		</downloads>
