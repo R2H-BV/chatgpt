@@ -50,10 +50,21 @@ class plgEditorsXtdChatgpt extends CMSPlugin {
 	 */
 	public function onDisplay($name)
 	{
-	// Check if administrator of site
-	if (!$this->app->isClient('administrator') || $this->app->input->get->getString('view') !== 'article') {
-		return;
-	}
+        $user  = Factory::getUser();
+
+        // Can create in any category (component permission) or at least in one category
+        $canCreateRecords = $user->authorise('core.create', 'com_content')
+            || count($user->getAuthorisedCategories('com_content', 'core.create')) > 0;
+
+        // Instead of checking edit on all records, we can use **same** check as the form editing view
+        $values = (array) Factory::getApplication()->getUserState('com_content.edit.article.id');
+        $isEditingRecords = count($values);
+
+        // This ACL check is probably a double-check (form view already performed checks)
+        $hasAccess = $canCreateRecords || $isEditingRecords;
+        if (!$hasAccess) {
+            return;
+        }
 
 		$apiKey = $this->params->get('apikey', '');
 		$apiModel = $this->params->get('model', 'text-davinci-003');
@@ -92,7 +103,8 @@ class plgEditorsXtdChatgpt extends CMSPlugin {
 				'model' => $apiModel,
 				'temp' => $apiTemp,
 				'tokens' => $tokens,
-				'waitingmsg' => Text::_('PLG_EDITORS-XTD_CHATGPT_MODAL_WAITING')
+				'waitingmsg' => Text::_('PLG_EDITORS-XTD_CHATGPT_MODAL_WAITING'),
+				'errormsg' => Text::_('PLG_EDITORS-XTD_CHATGPT_ERROR')
 			]
 		);
 
@@ -116,10 +128,21 @@ class plgEditorsXtdChatgpt extends CMSPlugin {
 	 */
 	public function onBeforeRender(): void
 	{
-		// Check if administrator of site
-		if (!$this->app->isClient('administrator') || $this->app->input->get->getString('view') !== 'article') {
-			return;
-		}
+        $user  = Factory::getUser();
+
+        // Can create in any category (component permission) or at least in one category
+        $canCreateRecords = $user->authorise('core.create', 'com_content')
+            || count($user->getAuthorisedCategories('com_content', 'core.create')) > 0;
+
+        // Instead of checking edit on all records, we can use **same** check as the form editing view
+        $values = (array) Factory::getApplication()->getUserState('com_content.edit.article.id');
+        $isEditingRecords = count($values);
+
+        // This ACL check is probably a double-check (form view already performed checks)
+        $hasAccess = $canCreateRecords || $isEditingRecords;
+        if (!$hasAccess) {
+            return;
+        }
 
 		// Load the Bootstrap modal JS.
 		HTMLHelper::_('bootstrap.modal');
@@ -133,10 +156,21 @@ class plgEditorsXtdChatgpt extends CMSPlugin {
 	 */
 	public function onAfterRender(): void
 	{
-		// Check if administrator of site
-		if (!$this->app->isClient('administrator') || $this->app->input->get->getString('view') !== 'article') {
-			return;
-		}
+        $user  = Factory::getUser();
+
+        // Can create in any category (component permission) or at least in one category
+        $canCreateRecords = $user->authorise('core.create', 'com_content')
+            || count($user->getAuthorisedCategories('com_content', 'core.create')) > 0;
+
+        // Instead of checking edit on all records, we can use **same** check as the form editing view
+        $values = (array) Factory::getApplication()->getUserState('com_content.edit.article.id');
+        $isEditingRecords = count($values);
+
+        // This ACL check is probably a double-check (form view already performed checks)
+        $hasAccess = $canCreateRecords || $isEditingRecords;
+        if (!$hasAccess) {
+            return;
+        }
 
 		$apiModel = $this->params->get('model', 'text-davinci-003');
 		(float) $apiTemp = $this->params->get('temp', '0.5');
@@ -185,18 +219,20 @@ class plgEditorsXtdChatgpt extends CMSPlugin {
 
 						<div class="mb-3 text-center">
 							<button id="generateText" class="btn btn-success">'.Text::_('PLG_EDITORS-XTD_CHATGPT_MODAL_QUESTION_BTN_GENERATE').'</button>
+							<button id="clearText" class="btn btn btn-secondary">'.Text::_('PLG_EDITORS-XTD_CHATGPT_MODAL_QUESTION_BTN_CLEAR').'</button>
 						</div>
 
 						<div class="asnwer-container position-relative">
 							<textarea id="answerText" class="form-control bg-light" placeholder="'.Text::_('PLG_EDITORS-XTD_CHATGPT_MODAL_QUESTION_PH_ANSWER').'" readonly></textarea>
 						</div>
-						<div id="loadingSpin"></div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">'.Text::_('PLG_EDITORS-XTD_CHATGPT_MODAL_QUESTION_BTN_CLOSE').'</button>
 						<button id="r2hbtn" type="button" class="btn btn-primary">'.Text::_('PLG_EDITORS-XTD_CHATGPT_MODAL_QUESTION_BTN_INSERT').'</button>
 					</div>
-
+					<div id="loadingSpin">
+						<div id="loadingSpinCircle"></div>
+					</div>
 				</div>
 			</div>
 		</div>';
@@ -215,10 +251,21 @@ class plgEditorsXtdChatgpt extends CMSPlugin {
 	 */
 	public function onBeforeCompileHead(): void
 	{
-		// Check if administrator of site
-		if (!$this->app->isClient('administrator') || $this->app->input->get->getString('view') !== 'article') {
-			return;
-		}
+        $user  = Factory::getUser();
+
+        // Can create in any category (component permission) or at least in one category
+        $canCreateRecords = $user->authorise('core.create', 'com_content')
+            || count($user->getAuthorisedCategories('com_content', 'core.create')) > 0;
+
+        // Instead of checking edit on all records, we can use **same** check as the form editing view
+        $values = (array) Factory::getApplication()->getUserState('com_content.edit.article.id');
+        $isEditingRecords = count($values);
+
+        // This ACL check is probably a double-check (form view already performed checks)
+        $hasAccess = $canCreateRecords || $isEditingRecords;
+        if (!$hasAccess) {
+            return;
+        }
 
 		/** @var Joomla\CMS\WebAsset\WebAssetManager $wa */
 		$wa = Factory::getApplication()->getDocument()->getWebAssetManager();

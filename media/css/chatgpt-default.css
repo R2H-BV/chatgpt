@@ -1,5 +1,5 @@
 /**
- * @copyright	Copyright (c) 2021  R2H BV (httpwwwr2hnl). All rights reserved.
+ * @copyright	Copyright (c) 2023  R2H BV (http://r2h.nl). All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
@@ -8,21 +8,42 @@
 }
 
 #loadingSpin {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(255,255,255,.5);
+    visibility: hidden;
+}
+
+#loadingSpin.display {
+    visibility: visible;
+}
+
+#loadingSpinCircle {
     width: 2rem;
     height: 2rem;
     border: 5px solid #f3f3f3;
     border-top: 6px solid #9c41f2;
     border-radius: 100%;
     margin: auto;
-    visibility: hidden;
     animation: spin 1s infinite linear;
     position: absolute;
     left: calc(50% - 1rem);
     top: calc(50% - 1rem);
 }
 
-#loadingSpin.display {
-    visibility: visible;
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#questionText::placeholder,
+#answerText::placeholder {
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--gray-600);
 }
 
 #answerText {
