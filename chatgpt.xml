@@ -75,4 +75,7 @@
 			</fieldset>
 		</fields>
 	</config>
+	<updateservers>
+    	<server type="extension" priority="1" name="R2H chat GPT">https://raw.githubusercontent.com/R2H-BV/chatgpt/main/update.xml</server>
+ 	</updateservers>
 </extension>
