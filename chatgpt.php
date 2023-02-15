@@ -1,6 +1,6 @@
 <?php
 /**
- * @copyright	Copyright (c) 2023  R2H BV (https://www.r2h.nl). All rights reserved.
+ * @copyright	Copyright (c) 2023  R2H BV (https://r2h.nl). All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 

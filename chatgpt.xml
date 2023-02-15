@@ -6,8 +6,8 @@
 	<copyright>Copyright (c) 2023 R2H B.V. All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>rick@r2h.nl</authorEmail>
-	<authorUrl>https://www.r2h.nl</authorUrl>
-	<version>1.0.0</version>
+	<authorUrl>https://r2h.nl</authorUrl>
+	<version>1.0.1</version>
 	<description>PLG_EDITORS-XTD_CHATGPT_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="chatgpt">chatgpt.php</filename>
