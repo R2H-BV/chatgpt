@@ -11,7 +11,7 @@
 		<targetplatform name="joomla" version="4.[0123456789]"/>
 		<php_minimum>7.4</php_minimum>
 		<element>chatgpt</element>
-		<folder>editor-xtd</folder>
+		<folder>editors-xtd</folder>
 		<type>plugin</type>
 		<client>site</client>
 		<tags>
