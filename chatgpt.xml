@@ -21,6 +21,10 @@
 	<languages>
 		<language tag="en-GB">language/en-GB/plg_editors-xtd_chatgpt.ini</language>
 		<language tag="en-GB">language/en-GB/plg_editors-xtd_chatgpt.sys.ini</language>
+		<language tag="de-AT">language/de-AT/plg_editors-xtd_chatgpt.ini</language>
+		<language tag="de-AT">language/de-AT/plg_editors-xtd_chatgpt.sys.ini</language>
+		<language tag="de-DE">language/de-DE/plg_editors-xtd_chatgpt.ini</language>
+		<language tag="de-DE">language/de-DE/plg_editors-xtd_chatgpt.sys.ini</language>
 	</languages>
 
 	<config>
