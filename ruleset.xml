@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ruleset
+    name="R2H"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+    <config name="installed_paths" value="vendor/r2h/r2h-coding-standard" />
+
+	<rule ref="r2h-coding-standard" />
+
+    <exclude-pattern>language/*</exclude-pattern>
+    <exclude-pattern>media/*</exclude-pattern>
+</ruleset>
