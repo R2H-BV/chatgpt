@@ -64,29 +64,37 @@ class PlgEditorsXtdChatgpt extends CMSPlugin
             return null;
         }
 
-        $apiKey = $this->params->get('apikey', '');
-        $apiModel = $this->params->get('model', 'text-davinci-003');
-        (float) $apiTemp = $this->params->get('temp', '0.5');
-        (int) $apitokenLow = $this->params->get('tokenLow', '1000');
-        (int) $apitokenHi = $this->params->get('tokenHi', '2000');
+        $data = [
+            'apiKey' => $this->params->get('apikey', ''),
+            'apiModel' => $this->params->get('model', 'text-davinci-003'),
+            'temp' => $this->params->get('temp', '0.5'),
+            'apiTokenLow' => $this->params->get('tokenLow', '1000'),
+            'apiTokenHi' => $this->params->get('tokenHi', '2000'),
+        ];
 
-        if ($apitokenLow < 1 || $apitokenLow > 2048) {
-            $apitokenLow = 1000;
-        }
-
-        if ($apitokenHi < 1 || $apitokenHi > 4000) {
-            $apitokenHi = 2000;
-        }
-
-        if ($apiModel === 'text-davinci-003') {
-            $tokens = $apitokenHi;
-        } else {
-            $tokens = $apitokenLow;
-        }
-
-        if (!$apiKey) {
+        try {
+            [
+                'apiKey' => $apiKey,
+                'apiModel' => $apiModel,
+                'temp' => $temp,
+                'apiTokenLow' => $apiTokenLow,
+                'apiTokenHi' => $apiTokenHi,
+            ] = $this->validate([
+                'apiKey' => ['required', 'string'],
+                'apiModel' => [
+                    'required',
+                    'string',
+                    'in:text-davinci-003,text-curie-001,text-babbage-001,text-ada-001',
+                ],
+                'temp' => ['required', 'float'],
+                'apiTokenLow' => ['required', 'integer', 'min:1', 'max:2048'],
+                'apiTokenHi' => ['required', 'integer', 'min:1', 'max:4000'],
+            ], $data);
+        } catch (Exception $e) {
             return null;
         }
+
+        $tokens = ($apiModel === 'text-davinci-003') ? $apiTokenHi : $apiTokenLow;
 
         $doc = $this->app->getDocument();
 
@@ -99,7 +107,7 @@ class PlgEditorsXtdChatgpt extends CMSPlugin
             [
                 'apikey' => $apiKey,
                 'model' => $apiModel,
-                'temp' => $apiTemp,
+                'temp' => $temp,
                 'tokens' => $tokens,
                 'waitingmsg' => Text::_('PLG_EDITORS-XTD_CHATGPT_MODAL_WAITING'),
                 'errormsg' => Text::_('PLG_EDITORS-XTD_CHATGPT_ERROR'),
@@ -267,5 +275,78 @@ class PlgEditorsXtdChatgpt extends CMSPlugin
         }
 
         return $buffer;
+    }
+
+    /**
+     * Validate the ruleset.
+     *
+     * @param  array<string, array<string>> $ruleset The ruleset to validate.
+     * @param  array<string, mixed>         $data    The data to validate.
+     * @return array<string, mixed> The validation results.
+     */
+    protected function validate(array $ruleset, array $data): array
+    {
+        // Define the rules.
+        $definedRules = [
+            'required' => function ($value) {
+                return strlen($value) > 0;
+            },
+            'integer' => function ($value) {
+                return is_numeric($value);
+            },
+            'string' => function ($value) {
+                return is_string($value);
+            },
+            'min' => function ($value, string $min) {
+                return $value >= (int) $min;
+            },
+            'max' => function ($value, string $max) {
+                return $value <= (int) $max;
+            },
+            'in' => function ($value, string $haystack) {
+                $haystack = array_map('trim', explode(',', $haystack));
+                return in_array(trim($value), $haystack);
+            },
+        ];
+
+        $items = [];
+
+        foreach ($ruleset as $key => $rules) {
+            $value = $this->validateItem($key, $rules, $definedRules, $data);
+            $items[$key] = $value;
+        }
+
+        return $items;
+    }
+
+    /**
+     * Validate an item.
+     *
+     * @param  string                  $key          The key to validate.
+     * @param  array<string>           $rules        The rules to validate.
+     * @param  array<string, callable> $definedRules The defined rules.
+     * @param  array<string, mixed>    $data         The data to validate.
+     * @throws \InvalidArgumentException If the rule is not defined.
+     *                                   If the rule fails.
+     */
+    protected function validateItem(string $key, array $rules, array $definedRules, array $data): mixed
+    {
+        $value = $data[$key] ?? null;
+
+        foreach ($rules as $rule) {
+            [$rule, $arguments] = array_pad(explode(':', $rule, 2), 2, null);
+
+            if (!array_key_exists($rule, $definedRules)) {
+                throw new \InvalidArgumentException(sprintf('Rule "%s" is not defined', $rule), 402);
+            }
+
+            $rule = $definedRules[$rule];
+
+            if (!$rule($value, $arguments)) {
+                throw new \InvalidArgumentException(sprintf('Rule "%s" failed for "%s"', $rule, $key), 402);
+            }
+        }
+
+        return $value;
     }
 }
