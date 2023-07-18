@@ -176,23 +176,31 @@ class PlgEditorsXtdChatgpt extends CMSPlugin
             return;
         }
 
-        $apiModel = $this->params->get('model', 'text-davinci-003');
-        (float) $apiTemp = $this->params->get('temp', '0.5');
-        (int) $apitokenLow = $this->params->get('tokenLow', '1000');
-        (int) $apitokenHi = $this->params->get('tokenHi', '2000');
+        $data = [
+            'apiModel' => $this->params->get('model', 'text-davinci-003'),
+            'temp' => $this->params->get('temp', '0.5'),
+            'apiTokenLow' => $this->params->get('tokenLow', '1000'),
+            'apiTokenHi' => $this->params->get('tokenHi', '2000'),
+        ];
 
-        if ($apitokenLow < 1 || $apitokenLow > 2048) {
-            $apitokenLow = 1000;
-        }
-
-        if ($apitokenHi < 1 || $apitokenHi > 4000) {
-            $apitokenHi = 2000;
-        }
-
-        if ($apiModel === 'text-davinci-003') {
-            $tokens = $apitokenHi;
-        } else {
-            $tokens = $apitokenLow;
+        try {
+            [
+                'apiModel' => $apiModel,
+                'temp' => $apiTemp,
+                'apiTokenLow' => $apiTokenLow,
+                'apiTokenHi' => $apiTokenHi,
+            ] = $this->validate([
+                'apiModel' => [
+                    'required',
+                    'string',
+                    'in:text-davinci-003,text-curie-001,text-babbage-001,text-ada-001',
+                ],
+                'temp' => ['required', 'numeric'],
+                'apiTokenLow' => ['required', 'numeric', 'min:1', 'max:2048'],
+                'apiTokenHi' => ['required', 'numeric', 'min:1', 'max:4000'],
+            ], $data);
+        } catch (Exception $e) {
+            return;
         }
 
         // Get the body text from the Application.
@@ -201,7 +209,7 @@ class PlgEditorsXtdChatgpt extends CMSPlugin
         $newBodyOutput = self::loadLayout('default', [
             'apiModel' => $apiModel,
             'apiTemp' => $apiTemp,
-            'tokens' => $tokens,
+            'tokens' => $apiModel === 'text-davinci-003' ? $apiTokenHi : $apiTokenLow,
         ]);
 
 
