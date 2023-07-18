@@ -33,7 +33,7 @@ use Joomla\CMS\Language\Text;
                         <?php echo Text::_('PLG_EDITORS-XTD_CHATGPT_MODAL_QUESTION_TITLE'); ?>
                     </label>
                     <textarea id="questionText" class="form-control"
-                        placeholder="'.Text::_('PLG_EDITORS-XTD_CHATGPT_MODAL_QUESTION_PH').'"></textarea>
+                        placeholder="<?php Text::_('PLG_EDITORS-XTD_CHATGPT_MODAL_QUESTION_PH'); ?>"></textarea>
                 </div>
 
                 <div class="mb-3 text-center">

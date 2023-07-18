@@ -11,6 +11,8 @@
 	<description>PLG_EDITORS-XTD_CHATGPT_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="chatgpt">chatgpt.php</filename>
+        <folder>assets</folder>
+        <folder>tmpl</folder>
 	</files>
 
 	<media folder="media" destination="plg_editors-xtd_chatgpt">

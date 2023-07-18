@@ -86,9 +86,9 @@ class PlgEditorsXtdChatgpt extends CMSPlugin
                     'string',
                     'in:text-davinci-003,text-curie-001,text-babbage-001,text-ada-001',
                 ],
-                'temp' => ['required', 'float'],
-                'apiTokenLow' => ['required', 'integer', 'min:1', 'max:2048'],
-                'apiTokenHi' => ['required', 'integer', 'min:1', 'max:4000'],
+                'temp' => ['required', 'numeric'],
+                'apiTokenLow' => ['required', 'numeric', 'min:1', 'max:2048'],
+                'apiTokenHi' => ['required', 'numeric', 'min:1', 'max:4000'],
             ], $data);
         } catch (Exception $e) {
             return null;
@@ -291,7 +291,7 @@ class PlgEditorsXtdChatgpt extends CMSPlugin
             'required' => function ($value) {
                 return strlen($value) > 0;
             },
-            'integer' => function ($value) {
+            'numeric' => function ($value) {
                 return is_numeric($value);
             },
             'string' => function ($value) {
