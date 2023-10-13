@@ -6,11 +6,12 @@ declare(strict_types = 1);
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
- use Joomla\CMS\Factory;
- use Joomla\CMS\Language\Text;
- use Joomla\CMS\HTML\HTMLHelper;
- use Joomla\CMS\Object\CMSObject;
- use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\Registry\Registry;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Application\CMSApplication;
 
 // phpcs:disable PSR1.Files.SideEffects
 \defined('_JEXEC') or die;
@@ -42,20 +43,24 @@ class PlgEditorsXtdChatgpt extends CMSPlugin
      * Display the button
      *
      * @param  string $name The name of the button to add.
-     * @return CMSObject|void  The button options as CMSObject, void if ACL check fails.
+     * @return Registry|void  The button options as CMSObject, void if ACL check fails.
      *
      * @since 1.5
      */
-    public function onDisplay(string $name): ?CMSObject
+    public function onDisplay(string $name): ?Registry
     {
-        $user  = Factory::getUser();
+        $app = Factory::getApplication();
+
+        assert($app instanceof CMSApplication, new \RuntimeException('Application is not CMSApplication', 500));
+
+        $user  = $app->getIdentity();
 
         // Can create in any category (component permission) or at least in one category
         $canCreateRecords = $user->authorise('core.create', 'com_content')
             || count($user->getAuthorisedCategories('com_content', 'core.create')) > 0;
 
         // Instead of checking edit on all records, we can use **same** check as the form editing view
-        $values = (array) Factory::getApplication()->getUserState('com_content.edit.article.id');
+        $values = (array) $app->getUserState('com_content.edit.article.id');
         $isEditingRecords = count($values);
 
         // This ACL check is probably a double-check (form view already performed checks)
@@ -114,7 +119,7 @@ class PlgEditorsXtdChatgpt extends CMSPlugin
             ]
         );
 
-        $button = new CMSObject();
+        $button = new stdClass;
         $button->modal   = false;
         $button->text    = Text::_('PLG_EDITORS-XTD_CHATGPT_BTNTITLE');
         $button->name    = $this->_type . '_' . $this->_name;
@@ -123,7 +128,7 @@ class PlgEditorsXtdChatgpt extends CMSPlugin
         $button->iconSVG = file_get_contents(__DIR__ . '/assets/chatgpt-logo.svg');
         $button->link    = '#';
 
-        return $button;
+        return new Registry($button);
     }
 
     /**
@@ -133,14 +138,18 @@ class PlgEditorsXtdChatgpt extends CMSPlugin
      */
     public function onBeforeRender(): void
     {
-        $user  = Factory::getUser();
+        $app = Factory::getApplication();
+
+        assert($app instanceof CMSApplication, new \RuntimeException('Application is not CMSApplication', 500));
+
+        $user  = $app->getIdentity();
 
         // Can create in any category (component permission) or at least in one category
         $canCreateRecords = $user->authorise('core.create', 'com_content')
             || count($user->getAuthorisedCategories('com_content', 'core.create')) > 0;
 
         // Instead of checking edit on all records, we can use **same** check as the form editing view
-        $values = (array) Factory::getApplication()->getUserState('com_content.edit.article.id');
+        $values = (array) $app->getUserState('com_content.edit.article.id');
         $isEditingRecords = count($values);
 
         // This ACL check is probably a double-check (form view already performed checks)
@@ -160,14 +169,18 @@ class PlgEditorsXtdChatgpt extends CMSPlugin
      */
     public function onAfterRender(): void
     {
-        $user  = Factory::getUser();
+        $app = Factory::getApplication();
+
+        assert($app instanceof CMSApplication, new \RuntimeException('Application is not CMSApplication', 500));
+
+        $user  = $app->getIdentity();
 
         // Can create in any category (component permission) or at least in one category
         $canCreateRecords = $user->authorise('core.create', 'com_content')
             || count($user->getAuthorisedCategories('com_content', 'core.create')) > 0;
 
         // Instead of checking edit on all records, we can use **same** check as the form editing view
-        $values = (array) Factory::getApplication()->getUserState('com_content.edit.article.id');
+        $values = (array) $app->getUserState('com_content.edit.article.id');
         $isEditingRecords = count($values);
 
         // This ACL check is probably a double-check (form view already performed checks)
@@ -225,14 +238,18 @@ class PlgEditorsXtdChatgpt extends CMSPlugin
      */
     public function onBeforeCompileHead(): void
     {
-        $user  = Factory::getUser();
+        $app = Factory::getApplication();
+
+        assert($app instanceof CMSApplication, new \RuntimeException('Application is not CMSApplication', 500));
+
+        $user  = $app->getIdentity();
 
         // Can create in any category (component permission) or at least in one category
         $canCreateRecords = $user->authorise('core.create', 'com_content')
             || count($user->getAuthorisedCategories('com_content', 'core.create')) > 0;
 
         // Instead of checking edit on all records, we can use **same** check as the form editing view
-        $values = (array) Factory::getApplication()->getUserState('com_content.edit.article.id');
+        $values = (array) $app->getUserState('com_content.edit.article.id');
         $isEditingRecords = count($values);
 
         // This ACL check is probably a double-check (form view already performed checks)
@@ -241,10 +258,7 @@ class PlgEditorsXtdChatgpt extends CMSPlugin
             return;
         }
 
-        /**
-         * @var Joomla\CMS\WebAsset\WebAssetManager $wa
-         */
-        $wa = Factory::getApplication()->getDocument()->getWebAssetManager();
+        $wa = $app->getDocument()->getWebAssetManager();
 
         // Load CSS
         $wa->registerAndUseStyle('chatgpt', 'plg_editors-xtd_chatgpt/chatgpt-default.css', [], ['as'=>'style']);
